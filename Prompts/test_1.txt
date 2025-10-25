@@ -121,3 +121,8 @@
     at Cn (vue-vendor-DvigewNr.js:13:38)
     at Ue (vue-vendor-DvigewNr.js:13:108)
     at HTMLButtonElement.n (vue-vendor-DvigewNr.js:17:7680)
+
+8 - [(chat #8)] 1 - Move al folders and files of this project into the folder 'Test_1' but don't move just these files and folders ['.claude', 'Prompts', '.gitignore', 'Examen Práctico - Desarrollador Sr Full Stack - IA.docx', and 'total-tech-test.sln']
+
+8 - [(chat #8) (BUG)] 2 - While running docker-compose up -d inside the Test_1 folder I got this error in the terminal console: ✘ Container adquisiciones-db            Error response from daemon: Conflict. The ...                              0.0s 
+   Error response from daemon: Conflict. The container name "/adquisiciones-db" is already in use by container "855a91f146abb8ca51dbea3e20f7431897879e03007b682a393f81cc0dfd5106". You have to remove (or rename) that container to be able to reuse that name.
