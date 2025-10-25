@@ -181,19 +181,98 @@ public class PedidoService : IPedidoService
 
     private IQueryable<Pedido> ApplyWhereClause(IQueryable<Pedido> query, string where)
     {
-        // Simple WHERE clause parser for common cases
-        // Example: "pedido.id_estado_pedido=1"
-        if (where.Contains("id_estado_pedido="))
+        // Enhanced WHERE clause parser that handles multiple conditions and data types
+        // Supports: field=value, field='value', multiple conditions with AND/OR
+
+        if (string.IsNullOrWhiteSpace(where))
+            return query;
+
+        try
         {
-            var value = int.Parse(where.Split('=')[1].Trim());
-            query = query.Where(p => p.IdEstadoPedido == value);
+            // Split by AND/OR operators (simple implementation)
+            var conditions = where.Split(new[] { " AND ", " and " }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var condition in conditions)
+            {
+                var trimmedCondition = condition.Trim();
+
+                // Parse field=value or field='value'
+                if (trimmedCondition.Contains("="))
+                {
+                    var parts = trimmedCondition.Split('=');
+                    if (parts.Length != 2) continue;
+
+                    var field = parts[0].Trim().ToLower();
+                    var value = parts[1].Trim().Trim('\'', '"'); // Remove quotes if present
+
+                    // Handle different field types
+                    if (field.Contains("id_estado_pedido"))
+                    {
+                        if (int.TryParse(value, out int intValue))
+                        {
+                            query = query.Where(p => p.IdEstadoPedido == intValue);
+                        }
+                    }
+                    else if (field.Contains("id_proveedor"))
+                    {
+                        if (int.TryParse(value, out int intValue))
+                        {
+                            query = query.Where(p => p.IdProveedor == intValue);
+                        }
+                    }
+                    else if (field.Contains("id_tipo_pedido"))
+                    {
+                        if (int.TryParse(value, out int intValue))
+                        {
+                            query = query.Where(p => p.IdTipoPedido == intValue);
+                        }
+                    }
+                    else if (field.Contains("id_estado_surtido"))
+                    {
+                        if (int.TryParse(value, out int intValue))
+                        {
+                            query = query.Where(p => p.IdEstadoSurtido == intValue);
+                        }
+                    }
+                    else if (field.Contains("folio"))
+                    {
+                        query = query.Where(p => p.Folio != null && p.Folio.Contains(value));
+                    }
+                    else if (field.Contains("numero_contrato"))
+                    {
+                        query = query.Where(p => p.NumeroContrato != null && p.NumeroContrato.Contains(value));
+                    }
+                    else if (field.Contains("observaciones"))
+                    {
+                        query = query.Where(p => p.Observaciones != null && p.Observaciones.Contains(value));
+                    }
+                }
+                // Handle LIKE operator
+                else if (trimmedCondition.ToUpper().Contains(" LIKE "))
+                {
+                    var parts = trimmedCondition.Split(new[] { " LIKE ", " like " }, StringSplitOptions.None);
+                    if (parts.Length == 2)
+                    {
+                        var field = parts[0].Trim().ToLower();
+                        var value = parts[1].Trim().Trim('\'', '"', '%');
+
+                        if (field.Contains("folio"))
+                        {
+                            query = query.Where(p => p.Folio != null && p.Folio.Contains(value));
+                        }
+                        else if (field.Contains("numero_contrato"))
+                        {
+                            query = query.Where(p => p.NumeroContrato != null && p.NumeroContrato.Contains(value));
+                        }
+                    }
+                }
+            }
         }
-        else if (where.Contains("id_proveedor="))
+        catch (Exception ex)
         {
-            var value = int.Parse(where.Split('=')[1].Trim());
-            query = query.Where(p => p.IdProveedor == value);
+            _logger.LogWarning(ex, "Error parsing WHERE clause: {Where}. Returning unfiltered results.", where);
+            // Return query without filtering if parsing fails
         }
-        // Add more WHERE clause parsing as needed
 
         return query;
     }

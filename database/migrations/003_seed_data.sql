@@ -10,10 +10,10 @@
 -- You should change this in production!
 
 INSERT INTO spartan_user (name, email, password_hash, is_active) VALUES
-('Administrador Sistema', 'admin@caasim.gob.mx', '$2a$11$vZ8qLKHPvXDKJX7M9wYl3.rO7ZB9yX7j/GKOmYJQqHzJqGEp5L8Eq', true),
-('Juan García Hernández', 'jgarcia@caasim.gob.mx', '$2a$11$vZ8qLKHPvXDKJX7M9wYl3.rO7ZB9yX7j/GKOmYJQqHzJqGEp5L8Eq', true),
-('María Rodríguez López', 'mrodriguez@caasim.gob.mx', '$2a$11$vZ8qLKHPvXDKJX7M9wYl3.rO7ZB9yX7j/GKOmYJQqHzJqGEp5L8Eq', true),
-('Carlos Álvarez Martínez', 'calvarez@caasim.gob.mx', '$2a$11$vZ8qLKHPvXDKJX7M9wYl3.rO7ZB9yX7j/GKOmYJQqHzJqGEp5L8Eq', true);
+('Administrador Sistema', 'admin@caasim.gob.mx', '$2a$11$BpNho1L7RV1AsvRK6mg3TOg4jk0aDbVZXePZbc.LD/9ItzleAsesO', true),
+('Juan García Hernández', 'jgarcia@caasim.gob.mx', '$2a$11$BpNho1L7RV1AsvRK6mg3TOg4jk0aDbVZXePZbc.LD/9ItzleAsesO', true),
+('María Rodríguez López', 'mrodriguez@caasim.gob.mx', '$2a$11$BpNho1L7RV1AsvRK6mg3TOg4jk0aDbVZXePZbc.LD/9ItzleAsesO', true),
+('Carlos Álvarez Martínez', 'calvarez@caasim.gob.mx', '$2a$11$BpNho1L7RV1AsvRK6mg3TOg4jk0aDbVZXePZbc.LD/9ItzleAsesO', true);
 
 -- ========================================
 -- SEED CATALOG: ESTADOS DE REQUISICIÓN

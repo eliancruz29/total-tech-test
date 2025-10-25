@@ -73,6 +73,16 @@ public class AdquisicionesDbContext : DbContext
                 .WithMany(u => u.PedidosRegistrados)
                 .HasForeignKey(e => e.IdUsuarioRegistro)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.UsuarioModifica)
+                .WithMany()
+                .HasForeignKey(e => e.IdUsuarioModifica)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.UsuarioAprueba)
+                .WithMany()
+                .HasForeignKey(e => e.IdUsuarioAprueba)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Configure PedidoDetalle entity
