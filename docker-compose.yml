@@ -31,7 +31,7 @@ services:
     container_name: adquisiciones-api
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
-      - ASPNETCORE_HTTP_PORTS=${ASPNETCORE_HTTP_PORTS:-5000}
+      - ASPNETCORE_HTTP_PORTS=${ASPNETCORE_HTTP_PORTS:-5006}
       - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=${POSTGRES_DB:-adquisiciones_db};Username=${POSTGRES_USER:-adquisiciones_user};Password=${POSTGRES_PASSWORD:-Change_This_Password_123!}
       - JWT__Secret=${JWT__Secret:-ThisIsAVeryLongSecretKeyForJWTTokenGeneration_ChangeThis_MinimumLength64Characters!}
       - JWT__Issuer=${JWT__Issuer:-AdquisicionesAPI}
@@ -39,14 +39,14 @@ services:
       - JWT__ExpirationMinutes=${JWT__ExpirationMinutes:-60}
       - CORS__AllowedOrigins=${CORS__AllowedOrigins:-http://localhost:8080}
     ports:
-      - "5000:5000"
+      - "5006:5006"
     depends_on:
       database:
         condition: service_healthy
     networks:
       - adquisiciones-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5006/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -58,7 +58,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:5000}
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:5006}
     container_name: adquisiciones-frontend
     ports:
       - "8080:80"

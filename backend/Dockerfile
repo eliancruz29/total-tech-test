@@ -18,7 +18,7 @@ RUN dotnet publish "AdquisicionesAPI.csproj" -c Release -o /app/publish /p:UseAp
 # Final stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-EXPOSE 5000
+EXPOSE 5006
 
 # Install curl for healthcheck
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*

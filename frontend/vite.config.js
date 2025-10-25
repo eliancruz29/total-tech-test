@@ -17,11 +17,11 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_BASE_URL || 'http://localhost:5000',
+        target: process.env.VITE_API_BASE_URL || 'http://localhost:5006',
         changeOrigin: true,
       },
       '/oauth': {
-        target: process.env.VITE_API_BASE_URL || 'http://localhost:5000',
+        target: process.env.VITE_API_BASE_URL || 'http://localhost:5006',
         changeOrigin: true,
       },
     },

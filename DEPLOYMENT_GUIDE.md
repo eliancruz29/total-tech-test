@@ -27,8 +27,8 @@ docker-compose ps
 
 # 4. Access the application
 # Frontend: http://localhost:8080
-# Backend API: http://localhost:5000
-# Swagger Docs: http://localhost:5000/swagger
+# Backend API: http://localhost:5006
+# Swagger Docs: http://localhost:5006/swagger
 ```
 
 Default login credentials:
@@ -42,7 +42,7 @@ Default login credentials:
 - Docker 20.10+ installed
 - Docker Compose 2.0+ installed
 - At least 2GB of free RAM
-- Ports 5432, 5000, and 8080 available
+- Ports 5432, 5006, and 8080 available
 
 ### Manual Deployment
 
@@ -109,9 +109,9 @@ docker-compose ps
 | Service | URL | Description |
 |---------|-----|-------------|
 | Frontend | http://localhost:8080 | Main application UI |
-| Backend API | http://localhost:5000 | REST API endpoints |
-| Swagger | http://localhost:5000/swagger | API documentation |
-| Health Check | http://localhost:5000/health | API health status |
+| Backend API | http://localhost:5006 | REST API endpoints |
+| Swagger | http://localhost:5006/swagger | API documentation |
+| Health Check | http://localhost:5006/health | API health status |
 | Database | localhost:5432 | PostgreSQL (use psql or pgAdmin) |
 
 ### Step 5: Test the Application
@@ -160,7 +160,7 @@ dotnet build
 dotnet run
 ```
 
-The API should now be running at http://localhost:5000
+The API should now be running at http://localhost:5006
 
 ### 3. Frontend Setup
 
@@ -173,7 +173,7 @@ npm install
 
 # Create local environment file
 cat > .env.local << EOF
-VITE_API_BASE_URL=http://localhost:5000
+VITE_API_BASE_URL=http://localhost:5006
 EOF
 
 # Start development server
@@ -201,7 +201,7 @@ npx serve -s dist -p 8080
 
 ```bash
 # Check API health
-curl http://localhost:5000/health
+curl http://localhost:5006/health
 
 # Expected response: Healthy
 ```
@@ -210,7 +210,7 @@ curl http://localhost:5000/health
 
 ```bash
 # Obtain JWT token
-curl -X GET "http://localhost:5000/oauth/token?grant_type=password&username=admin@caasim.gob.mx&password=admin123"
+curl -X GET "http://localhost:5006/oauth/token?grant_type=password&username=admin@caasim.gob.mx&password=admin123"
 
 # Expected response:
 # {
@@ -228,7 +228,7 @@ curl -X GET "http://localhost:5000/oauth/token?grant_type=password&username=admi
 TOKEN="your_token_here"
 
 # Test ListaSelAll endpoint
-curl -X GET "http://localhost:5000/api/pedido/ListaSelAll?startRowIndex=1&maximumRows=10" \
+curl -X GET "http://localhost:5006/api/pedido/ListaSelAll?startRowIndex=1&maximumRows=10" \
   -H "Authorization: Bearer $TOKEN"
 
 # Expected response: JSON with pedidos array
@@ -318,7 +318,7 @@ docker-compose restart backend
 
 **Problem**: Frontend shows "Network Error" when calling API
 
-- Verify backend is running: http://localhost:5000
+- Verify backend is running: http://localhost:5006
 - Check browser console for CORS errors
 - Verify VITE_API_BASE_URL in .env matches backend URL
 
@@ -342,7 +342,7 @@ npm run build
 ```bash
 # Check what's using the ports
 lsof -i :5432  # Database
-lsof -i :5000  # Backend
+lsof -i :5006  # Backend
 lsof -i :8080  # Frontend
 
 # Change ports in docker-compose.yml if needed

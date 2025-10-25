@@ -37,8 +37,8 @@ docker-compose logs -f
 ### Access Points
 
 - **Frontend**: http://localhost:8080
-- **Backend API**: http://localhost:5000
-- **Swagger Documentation**: http://localhost:5000/swagger
+- **Backend API**: http://localhost:5006
+- **Swagger Documentation**: http://localhost:5006/swagger
 - **Database**: localhost:5432
   - Database: `adquisiciones_db`
   - User: `adquisiciones_user`
@@ -103,7 +103,7 @@ docker-compose down -v
    dotnet run
    ```
 
-   API will be available at: http://localhost:5000
+   API will be available at: http://localhost:5006
 
 ### Frontend Setup
 
@@ -120,7 +120,7 @@ docker-compose down -v
 3. **Configure API URL**
    Create `.env.local`:
    ```bash
-   VITE_API_BASE_URL=http://localhost:5000
+   VITE_API_BASE_URL=http://localhost:5006
    ```
 
 4. **Run Development Server**
@@ -363,14 +363,14 @@ Import the `examen.postman_collection.json` file into Postman to test all endpoi
 1. **Start the application** (Docker or manually)
 2. **Obtain token**:
    ```bash
-   curl -X GET "http://localhost:5000/oauth/token" \
+   curl -X GET "http://localhost:5006/oauth/token" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "grant_type=password&username=admin&password=admin"
    ```
 
 3. **Test endpoints** using the token in Authorization header:
    ```bash
-   curl -X GET "http://localhost:5000/api/pedido/ListaSelAll?startRowIndex=1&maximumRows=10" \
+   curl -X GET "http://localhost:5006/api/pedido/ListaSelAll?startRowIndex=1&maximumRows=10" \
      -H "Authorization: Bearer YOUR_TOKEN_HERE"
    ```
 
