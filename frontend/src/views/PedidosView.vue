@@ -297,6 +297,8 @@ import {
 import { ElMessage } from 'element-plus'
 import PedidoDetailDialog from '../components/PedidoDetailDialog.vue'
 import * as XLSX from 'xlsx'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const pedidosStore = usePedidosStore()
 
@@ -436,8 +438,123 @@ function exportToExcel() {
 }
 
 function exportToPDF() {
-  ElMessage.info('Funcionalidad de exportación a PDF en desarrollo')
-  // Would implement jsPDF here
+  try {
+    // Create new PDF document in landscape orientation for better table display
+    const doc = new jsPDF('l', 'mm', 'a4')
+    
+    // Get current date for the report
+    const currentDate = new Date().toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+    
+    // Add header with title
+    doc.setFontSize(18)
+    doc.setTextColor(13, 75, 118) // Primary color #0d4b76
+    doc.text('Reporte de Pedidos', 148, 15, { align: 'center' })
+    
+    // Add subtitle with date and filters info
+    doc.setFontSize(10)
+    doc.setTextColor(100, 100, 100)
+    doc.text(`Generado el: ${currentDate}`, 148, 22, { align: 'center' })
+    
+    // Add filter information
+    let filterInfo = `Año: ${filters.value.year || 'Todos'}`
+    if (filters.value.folio) filterInfo += ` | Folio: ${filters.value.folio}`
+    if (filters.value.status) filterInfo += ` | Estado: ${filters.value.status}`
+    doc.text(filterInfo, 148, 28, { align: 'center' })
+    
+    // Prepare data for the table
+    const tableData = pedidosStore.pedidos.map(p => [
+      p.folio || '',
+      p.fechaPedido || '',
+      p.tipoPedido || '',
+      p.iniciales || '',
+      p.proveedorRazonSocial || '',
+      p.proveedorRfc || '',
+      formatCurrency(p.montoTotal),
+      p.estadoPedido || '',
+      p.estadoSurtido || ''
+    ])
+    
+    // Define table columns
+    const columns = [
+      { header: 'Folio', dataKey: 'folio' },
+      { header: 'Fecha', dataKey: 'fecha' },
+      { header: 'Tipo', dataKey: 'tipo' },
+      { header: 'Iniciales', dataKey: 'iniciales' },
+      { header: 'Proveedor', dataKey: 'proveedor' },
+      { header: 'RFC', dataKey: 'rfc' },
+      { header: 'Monto Total', dataKey: 'monto' },
+      { header: 'Est. Pedido', dataKey: 'estadoPedido' },
+      { header: 'Est. Surtido', dataKey: 'estadoSurtido' }
+    ]
+    
+    // Add table using autoTable
+    autoTable(doc, {
+      startY: 35,
+      head: [columns.map(col => col.header)],
+      body: tableData,
+      theme: 'striped',
+      headStyles: {
+        fillColor: [13, 75, 118], // Primary color
+        textColor: 255,
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        fontSize: 8,
+        cellPadding: 2
+      },
+      alternateRowStyles: {
+        fillColor: [245, 247, 250]
+      },
+      columnStyles: {
+        0: { cellWidth: 30 }, // Folio
+        1: { cellWidth: 22 }, // Fecha
+        2: { cellWidth: 20 }, // Tipo
+        3: { cellWidth: 18 }, // Iniciales
+        4: { cellWidth: 60 }, // Proveedor
+        5: { cellWidth: 25 }, // RFC
+        6: { cellWidth: 25, halign: 'right' }, // Monto
+        7: { cellWidth: 25 }, // Estado Pedido
+        8: { cellWidth: 25 }  // Estado Surtido
+      },
+      margin: { left: 10, right: 10 },
+      didDrawPage: function (data) {
+        // Add page numbers
+        const pageCount = doc.internal.getNumberOfPages()
+        const pageSize = doc.internal.pageSize
+        const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight()
+        doc.setFontSize(8)
+        doc.setTextColor(150)
+        doc.text(
+          `Página ${data.pageNumber} de ${pageCount}`,
+          pageSize.width / 2,
+          pageHeight - 10,
+          { align: 'center' }
+        )
+      }
+    })
+    
+    // Add footer with summary statistics
+    const finalY = doc.lastAutoTable.finalY || 35
+    doc.setFontSize(9)
+    doc.setTextColor(13, 75, 118)
+    doc.text(`Total de registros: ${pedidosStore.pedidos.length}`, 10, finalY + 10)
+    doc.text(`Monto total: ${formatCurrency(stats.value.totalAmount)}`, 10, finalY + 16)
+    
+    // Save the PDF
+    const fileName = `Pedidos_${filters.value.year}_${new Date().toISOString().split('T')[0]}.pdf`
+    doc.save(fileName)
+    
+    ElMessage.success('Archivo PDF generado correctamente')
+  } catch (error) {
+    console.error('Error al exportar a PDF:', error)
+    ElMessage.error('Error al exportar a PDF: ' + error.message)
+  }
 }
 
 function printTable() {

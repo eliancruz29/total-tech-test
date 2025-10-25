@@ -108,3 +108,16 @@
 5 - [(chat #5) (BUG)] 2 - Avoid sending those clause for filtwering at DB from frontend, this could lead to SQlInjections. I prefer to handle those filer options of frontend with enums.
 
 6 - [(chat #6) (FIX)] 1 - Fix the frontend to look identical to the "Consulta_Pedidos.html", right now is not taking the all screen.
+
+7 - [(chat #7) (FIX)] 1 - The export to PDF at frontend is not working completly, it's only showing and message 'Funcionalidad de exportación a PDF en desarrollo'. Implement the complete funtionality.
+
+7 - [(chat #7) (FIX)] 2 - Error while exporting to PDF at frontend in the browser, this is the logs in the broowser' console:
+   Error al exportar a PDF: TypeError: ne.autoTable is not a function
+    at R (PedidosView-CFZ6ILRV.js:241:25273)
+    at Cn (vue-vendor-DvigewNr.js:13:38)
+    at Ue (vue-vendor-DvigewNr.js:13:108)
+    at Yc (vue-vendor-DvigewNr.js:13:34330)
+    at handleClick (element-plus-BMGzvFhz.js:1:305051)
+    at Cn (vue-vendor-DvigewNr.js:13:38)
+    at Ue (vue-vendor-DvigewNr.js:13:108)
+    at HTMLButtonElement.n (vue-vendor-DvigewNr.js:17:7680)
