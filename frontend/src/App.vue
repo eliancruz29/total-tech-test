@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app-container">
     <AppHeader v-if="showHeader" />
     <main class="main-content">
       <router-view />
@@ -25,44 +25,15 @@ const showHeader = computed(() => {
 })
 </script>
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#app {
+<style scoped>
+#app-container {
+  width: 100%;
   min-height: 100vh;
   background-color: #f5f7fa;
 }
 
 .main-content {
+  width: 100%;
   min-height: calc(100vh - 60px);
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>

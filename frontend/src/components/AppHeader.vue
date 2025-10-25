@@ -57,8 +57,7 @@ function handleLogout() {
   align-items: center;
   padding: 0 24px;
   height: 60px;
-  max-width: 1920px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .header-left {

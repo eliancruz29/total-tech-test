@@ -28,11 +28,24 @@ export const usePedidosStore = defineStore('pedidos', () => {
     error.value = null
 
     try {
+      // Map status names to IDs
+      const statusMap = {
+        'COMPLETO': 1,
+        'PENDIENTE': 2,
+        'PARCIAL': 3
+      }
+
       const queryParams = {
         startRowIndex: params.startRowIndex || (currentPage.value - 1) * pageSize.value + 1,
         maximumRows: params.maximumRows || pageSize.value,
-        where: params.where || buildWhereClause(),
-        orderBy: params.orderBy || 'pedido.fecha_pedido DESC',
+        year: filters.value.year || null,
+        folio: filters.value.folio || null,
+        idProveedor: filters.value.supplier ? parseInt(filters.value.supplier) : null,
+        idEstadoSurtido: filters.value.status ? statusMap[filters.value.status.toUpperCase()] : null,
+        fechaDesde: filters.value.dateFrom || null,
+        fechaHasta: filters.value.dateTo || null,
+        sortBy: params.sortBy || 'fecha_pedido',
+        sortDirection: params.sortDirection || 'DESC',
       }
 
       const response = await pedidoService.getAll(queryParams)
@@ -111,19 +124,6 @@ export const usePedidosStore = defineStore('pedidos', () => {
     } finally {
       loading.value = false
     }
-  }
-
-  function buildWhereClause() {
-    const conditions = []
-
-    if (filters.value.status) {
-      // This would need to map status names to IDs
-      // For now, assuming status is an ID
-      conditions.push(`pedido.id_estado_pedido=${filters.value.status}`)
-    }
-
-    // Add more filter conditions as needed
-    return conditions.length > 0 ? conditions.join(' AND ') : null
   }
 
   function setFilters(newFilters) {

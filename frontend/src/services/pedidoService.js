@@ -10,8 +10,16 @@ export const pedidoService = {
     const {
       startRowIndex = 1,
       maximumRows = 10,
-      where = null,
-      orderBy = null,
+      year = null,
+      folio = null,
+      idProveedor = null,
+      idEstadoPedido = null,
+      idEstadoSurtido = null,
+      idTipoPedido = null,
+      fechaDesde = null,
+      fechaHasta = null,
+      sortBy = null,
+      sortDirection = null,
     } = params
 
     const queryParams = {
@@ -19,8 +27,17 @@ export const pedidoService = {
       maximumRows,
     }
 
-    if (where) queryParams.Where = where
-    if (orderBy) queryParams.OrderBy = orderBy
+    // Add optional filter parameters
+    if (year) queryParams.year = year
+    if (folio) queryParams.folio = folio
+    if (idProveedor) queryParams.idProveedor = idProveedor
+    if (idEstadoPedido) queryParams.idEstadoPedido = idEstadoPedido
+    if (idEstadoSurtido) queryParams.idEstadoSurtido = idEstadoSurtido
+    if (idTipoPedido) queryParams.idTipoPedido = idTipoPedido
+    if (fechaDesde) queryParams.fechaDesde = fechaDesde
+    if (fechaHasta) queryParams.fechaHasta = fechaHasta
+    if (sortBy) queryParams.sortBy = sortBy
+    if (sortDirection) queryParams.sortDirection = sortDirection
 
     const response = await apiClient.get('/api/pedido/ListaSelAll', {
       params: queryParams,

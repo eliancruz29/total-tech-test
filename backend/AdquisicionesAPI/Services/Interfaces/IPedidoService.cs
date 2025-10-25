@@ -7,8 +7,7 @@ public interface IPedidoService
     Task<PedidoListResponse> GetAllAsync(
         int startRowIndex,
         int maximumRows,
-        string? where,
-        string? orderBy);
+        PedidoFilterDto? filters = null);
 
     Task<PedidoDto?> GetByIdAsync(int id);
 

@@ -20,8 +20,7 @@ public class PedidoService : IPedidoService
     public async Task<PedidoListResponse> GetAllAsync(
         int startRowIndex,
         int maximumRows,
-        string? where,
-        string? orderBy)
+        PedidoFilterDto? filters = null)
     {
         try
         {
@@ -32,24 +31,17 @@ public class PedidoService : IPedidoService
                 .Include(p => p.EstadoSurtido)
                 .AsQueryable();
 
-            // Apply WHERE clause if provided
-            if (!string.IsNullOrEmpty(where))
+            // Apply filters safely using LINQ
+            if (filters != null)
             {
-                query = ApplyWhereClause(query, where);
+                query = ApplyFilters(query, filters);
             }
 
             // Get total count before pagination
             var totalRecords = await query.CountAsync();
 
-            // Apply ORDER BY clause
-            if (!string.IsNullOrEmpty(orderBy))
-            {
-                query = ApplyOrderByClause(query, orderBy);
-            }
-            else
-            {
-                query = query.OrderByDescending(p => p.FechaPedido);
-            }
+            // Apply sorting
+            query = ApplySorting(query, filters);
 
             // Apply pagination
             var skip = Math.Max(0, startRowIndex - 1);
@@ -179,123 +171,83 @@ public class PedidoService : IPedidoService
 
     #region Private Helper Methods
 
-    private IQueryable<Pedido> ApplyWhereClause(IQueryable<Pedido> query, string where)
+    /// <summary>
+    /// Apply filters to the query using safe LINQ expressions
+    /// </summary>
+    private IQueryable<Pedido> ApplyFilters(IQueryable<Pedido> query, PedidoFilterDto filters)
     {
-        // Enhanced WHERE clause parser that handles multiple conditions and data types
-        // Supports: field=value, field='value', multiple conditions with AND/OR
-
-        if (string.IsNullOrWhiteSpace(where))
-            return query;
-
-        try
+        // Filter by year
+        if (filters.Year.HasValue)
         {
-            // Split by AND/OR operators (simple implementation)
-            var conditions = where.Split(new[] { " AND ", " and " }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var condition in conditions)
-            {
-                var trimmedCondition = condition.Trim();
-
-                // Parse field=value or field='value'
-                if (trimmedCondition.Contains("="))
-                {
-                    var parts = trimmedCondition.Split('=');
-                    if (parts.Length != 2) continue;
-
-                    var field = parts[0].Trim().ToLower();
-                    var value = parts[1].Trim().Trim('\'', '"'); // Remove quotes if present
-
-                    // Handle different field types
-                    if (field.Contains("id_estado_pedido"))
-                    {
-                        if (int.TryParse(value, out int intValue))
-                        {
-                            query = query.Where(p => p.IdEstadoPedido == intValue);
-                        }
-                    }
-                    else if (field.Contains("id_proveedor"))
-                    {
-                        if (int.TryParse(value, out int intValue))
-                        {
-                            query = query.Where(p => p.IdProveedor == intValue);
-                        }
-                    }
-                    else if (field.Contains("id_tipo_pedido"))
-                    {
-                        if (int.TryParse(value, out int intValue))
-                        {
-                            query = query.Where(p => p.IdTipoPedido == intValue);
-                        }
-                    }
-                    else if (field.Contains("id_estado_surtido"))
-                    {
-                        if (int.TryParse(value, out int intValue))
-                        {
-                            query = query.Where(p => p.IdEstadoSurtido == intValue);
-                        }
-                    }
-                    else if (field.Contains("folio"))
-                    {
-                        query = query.Where(p => p.Folio != null && p.Folio.Contains(value));
-                    }
-                    else if (field.Contains("numero_contrato"))
-                    {
-                        query = query.Where(p => p.NumeroContrato != null && p.NumeroContrato.Contains(value));
-                    }
-                    else if (field.Contains("observaciones"))
-                    {
-                        query = query.Where(p => p.Observaciones != null && p.Observaciones.Contains(value));
-                    }
-                }
-                // Handle LIKE operator
-                else if (trimmedCondition.ToUpper().Contains(" LIKE "))
-                {
-                    var parts = trimmedCondition.Split(new[] { " LIKE ", " like " }, StringSplitOptions.None);
-                    if (parts.Length == 2)
-                    {
-                        var field = parts[0].Trim().ToLower();
-                        var value = parts[1].Trim().Trim('\'', '"', '%');
-
-                        if (field.Contains("folio"))
-                        {
-                            query = query.Where(p => p.Folio != null && p.Folio.Contains(value));
-                        }
-                        else if (field.Contains("numero_contrato"))
-                        {
-                            query = query.Where(p => p.NumeroContrato != null && p.NumeroContrato.Contains(value));
-                        }
-                    }
-                }
-            }
+            query = query.Where(p => p.FechaPedido.Year == filters.Year.Value);
         }
-        catch (Exception ex)
+
+        // Filter by folio (partial match)
+        if (!string.IsNullOrWhiteSpace(filters.Folio))
         {
-            _logger.LogWarning(ex, "Error parsing WHERE clause: {Where}. Returning unfiltered results.", where);
-            // Return query without filtering if parsing fails
+            query = query.Where(p => p.Folio != null && p.Folio.Contains(filters.Folio));
+        }
+
+        // Filter by supplier/provider
+        if (filters.IdProveedor.HasValue)
+        {
+            query = query.Where(p => p.IdProveedor == filters.IdProveedor.Value);
+        }
+
+        // Filter by order status
+        if (filters.IdEstadoPedido.HasValue)
+        {
+            query = query.Where(p => p.IdEstadoPedido == filters.IdEstadoPedido.Value);
+        }
+
+        // Filter by supply status
+        if (filters.IdEstadoSurtido.HasValue)
+        {
+            query = query.Where(p => p.IdEstadoSurtido == filters.IdEstadoSurtido.Value);
+        }
+
+        // Filter by order type
+        if (filters.IdTipoPedido.HasValue)
+        {
+            query = query.Where(p => p.IdTipoPedido == filters.IdTipoPedido.Value);
+        }
+
+        // Filter by date range
+        if (filters.FechaDesde.HasValue)
+        {
+            query = query.Where(p => p.FechaPedido >= filters.FechaDesde.Value);
+        }
+
+        if (filters.FechaHasta.HasValue)
+        {
+            query = query.Where(p => p.FechaPedido <= filters.FechaHasta.Value);
         }
 
         return query;
     }
 
-    private IQueryable<Pedido> ApplyOrderByClause(IQueryable<Pedido> query, string orderBy)
+    /// <summary>
+    /// Apply sorting to the query using safe LINQ expressions
+    /// </summary>
+    private IQueryable<Pedido> ApplySorting(IQueryable<Pedido> query, PedidoFilterDto? filters)
     {
-        // Simple ORDER BY parser
-        // Example: "pedido.id_pedido ASC" or "pedido.fecha_pedido DESC"
-        var parts = orderBy.Split(' ');
-        var field = parts[0].ToLower();
-        var direction = parts.Length > 1 ? parts[1].ToUpper() : "ASC";
+        var sortBy = filters?.SortBy?.ToLower() ?? "fecha_pedido";
+        var sortDirection = filters?.SortDirection?.ToUpper() ?? "DESC";
 
-        query = field switch
+        query = sortBy switch
         {
-            var f when f.Contains("id_pedido") => direction == "ASC"
+            "id_pedido" => sortDirection == "ASC" 
                 ? query.OrderBy(p => p.IdPedido)
                 : query.OrderByDescending(p => p.IdPedido),
-            var f when f.Contains("fecha_pedido") => direction == "ASC"
-                ? query.OrderBy(p => p.FechaPedido)
-                : query.OrderByDescending(p => p.FechaPedido),
-            var f when f.Contains("folio") => direction == "ASC"
+            "folio" => sortDirection == "ASC"
                 ? query.OrderBy(p => p.Folio)
                 : query.OrderByDescending(p => p.Folio),
+            "monto_total" => sortDirection == "ASC"
+                ? query.OrderBy(p => p.MontoTotal)
+                : query.OrderByDescending(p => p.MontoTotal),
+            "fecha_pedido" => sortDirection == "ASC"
+                ? query.OrderBy(p => p.FechaPedido)
+                : query.OrderByDescending(p => p.FechaPedido),
             _ => query.OrderByDescending(p => p.FechaPedido)
         };
 

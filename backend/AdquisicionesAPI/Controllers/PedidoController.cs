@@ -24,8 +24,16 @@ public class PedidoController : ControllerBase
     /// </summary>
     /// <param name="startRowIndex">Start row index (1-based)</param>
     /// <param name="maximumRows">Maximum rows to return</param>
-    /// <param name="Where">WHERE clause filter (e.g., "pedido.id_estado_pedido=1")</param>
-    /// <param name="OrderBy">ORDER BY clause (e.g., "pedido.id_pedido ASC")</param>
+    /// <param name="year">Filter by year</param>
+    /// <param name="folio">Filter by folio (partial match)</param>
+    /// <param name="idProveedor">Filter by supplier ID</param>
+    /// <param name="idEstadoPedido">Filter by order status ID</param>
+    /// <param name="idEstadoSurtido">Filter by supply status ID</param>
+    /// <param name="idTipoPedido">Filter by order type ID</param>
+    /// <param name="fechaDesde">Filter by date from (YYYY-MM-DD)</param>
+    /// <param name="fechaHasta">Filter by date to (YYYY-MM-DD)</param>
+    /// <param name="sortBy">Sort field (id_pedido, folio, fecha_pedido, monto_total)</param>
+    /// <param name="sortDirection">Sort direction (ASC or DESC)</param>
     [HttpGet("ListaSelAll")]
     [ProducesResponseType(typeof(PedidoListResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -33,15 +41,38 @@ public class PedidoController : ControllerBase
     public async Task<ActionResult<PedidoListResponse>> ListaSelAll(
         [FromQuery] int startRowIndex = 1,
         [FromQuery] int maximumRows = 10,
-        [FromQuery(Name = "Where")] string? Where = null,
-        [FromQuery(Name = "OrderBy")] string? OrderBy = null)
+        [FromQuery] int? year = null,
+        [FromQuery] string? folio = null,
+        [FromQuery] int? idProveedor = null,
+        [FromQuery] int? idEstadoPedido = null,
+        [FromQuery] int? idEstadoSurtido = null,
+        [FromQuery] int? idTipoPedido = null,
+        [FromQuery] string? fechaDesde = null,
+        [FromQuery] string? fechaHasta = null,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortDirection = null)
     {
         try
         {
-            _logger.LogInformation("ListaSelAll called: startRowIndex={StartRow}, maximumRows={MaxRows}, Where={Where}, OrderBy={OrderBy}",
-                startRowIndex, maximumRows, Where, OrderBy);
+            _logger.LogInformation("ListaSelAll called: startRowIndex={StartRow}, maximumRows={MaxRows}, year={Year}, folio={Folio}, idProveedor={IdProveedor}, idEstadoSurtido={IdEstadoSurtido}",
+                startRowIndex, maximumRows, year, folio, idProveedor, idEstadoSurtido);
 
-            var result = await _pedidoService.GetAllAsync(startRowIndex, maximumRows, Where, OrderBy);
+            // Build filter DTO from query parameters
+            var filters = new PedidoFilterDto
+            {
+                Year = year,
+                Folio = folio,
+                IdProveedor = idProveedor,
+                IdEstadoPedido = idEstadoPedido,
+                IdEstadoSurtido = idEstadoSurtido,
+                IdTipoPedido = idTipoPedido,
+                FechaDesde = !string.IsNullOrEmpty(fechaDesde) ? DateOnly.Parse(fechaDesde) : null,
+                FechaHasta = !string.IsNullOrEmpty(fechaHasta) ? DateOnly.Parse(fechaHasta) : null,
+                SortBy = sortBy,
+                SortDirection = sortDirection
+            };
+
+            var result = await _pedidoService.GetAllAsync(startRowIndex, maximumRows, filters);
 
             return Ok(result);
         }

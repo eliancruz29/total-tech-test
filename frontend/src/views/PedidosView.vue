@@ -56,8 +56,11 @@
                 style="width: 100%"
               >
                 <el-option label="Todos los proveedores" value="" />
-                <el-option label="Distribuidora Industrial del Centro" value="PROV001" />
-                <el-option label="Suministros Técnicos Hidalgo" value="PROV002" />
+                <el-option label="Distribuidora Industrial del Centro" value="1" />
+                <el-option label="Suministros Técnicos Hidalgo" value="2" />
+                <el-option label="Comercializadora de Equipos Gubernamentales" value="3" />
+                <el-option label="Papelería y Suministros Oficina Total" value="4" />
+                <el-option label="Constructora y Servicios Múltiples del Estado" value="5" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -452,6 +455,7 @@ onMounted(() => {
   padding: 20px;
   background-color: #f5f7fa;
   min-height: 100vh;
+  width: 100%;
 }
 
 .page-header {

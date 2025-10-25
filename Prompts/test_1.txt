@@ -102,3 +102,9 @@
    at AdquisicionesAPI.Services.Implementation.PedidoService.ApplyWhereClause(IQueryable`1 query, String where) in /src/AdquisicionesAPI/Services/Implementation/PedidoService.cs:line 188
    at AdquisicionesAPI.Services.Implementation.PedidoService.GetAllAsync(Int32 startRowIndex, Int32 maximumRows, String where, String orderBy) in /src/AdquisicionesAPI/Services/Implementation/PedidoService.cs:line 38
    at AdquisicionesAPI.Controllers.PedidoController.ListaSelAll(Int32 startRowIndex, Int32 maximumRows, String Where, String OrderBy) in /src/AdquisicionesAPI/Controllers/PedidoController.cs:line 44
+
+5 - [(chat #5) (BUG)] 1 - Los filtros en el front end no estan funcionando correctamente, prove todos los filtros y ninguno filtro la informacion. No hay errores en los logs de las Apps.
+
+5 - [(chat #5) (BUG)] 2 - Avoid sending those clause for filtwering at DB from frontend, this could lead to SQlInjections. I prefer to handle those filer options of frontend with enums.
+
+6 - [(chat #6) (FIX)] 1 - Fix the frontend to look identical to the "Consulta_Pedidos.html", right now is not taking the all screen.
