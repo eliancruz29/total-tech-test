@@ -1,0 +1,24 @@
+### Test API Endpoints
+
+### Health Check (GET all requirements - should return empty array initially)
+GET http://localhost:8080/api/requirement
+Content-Type: application/json
+
+###
+
+### Analyze Requirements
+POST http://localhost:8080/api/requirement/analyze
+Content-Type: application/json
+
+{
+  "requirementText": "Create a task management application where users can create tasks, assign them to team members, set due dates, and mark tasks as complete. Include notifications for approaching deadlines and a dashboard showing task statistics."
+}
+
+###
+
+### Get Specific Requirement (replace {id} with actual ID)
+GET http://localhost:8080/api/requirement/1
+Content-Type: application/json
+
+###
+

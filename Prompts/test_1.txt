@@ -1,3 +1,5 @@
+Using Claude code with claude-4.5-sonnet
+
 1 - [(main chat)] 1 - Main objetive is to refactor the "Consulta_Pedidos.html" to a Single Page Application using Vue.js version 3. This SPA will consume the new API, This new API will have all the described endpoints in the Postman collection file "examen.postman_collection.json" which will be develop using .NET 9 consuming a PostgresSql database and this database will be constructed using and script which will be created base on the tables described in the "Diccionario_de_datos.md" also verify that relations and names are correct. For a simple execution create the resopurces to be executed from a docker images. First create a plan to implement this, Then start implementing the main solution structure then implement all the task related with the database, then implement the APi and validate every endpoint described in the postman file is created identical, then implement the FrontEnd that will consume the API.
 
 1 - [(main chat)] 2 - Great, now continue with the next task described in the "IMPLEMENTATION_PLAN.md".
@@ -104,6 +106,8 @@
    at AdquisicionesAPI.Controllers.PedidoController.ListaSelAll(Int32 startRowIndex, Int32 maximumRows, String Where, String OrderBy) in /src/AdquisicionesAPI/Controllers/PedidoController.cs:line 44
 
 5 - [(chat #5) (BUG)] 1 - Los filtros en el front end no estan funcionando correctamente, prove todos los filtros y ninguno filtro la informacion. No hay errores en los logs de las Apps.
+
+Using Cursor with claude-4.5-sonnet
 
 5 - [(chat #5) (BUG)] 2 - Avoid sending those clause for filtwering at DB from frontend, this could lead to SQlInjections. I prefer to handle those filer options of frontend with enums.
 

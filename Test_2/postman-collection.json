@@ -1,0 +1,184 @@
+{
+  "info": {
+    "name": "Requirements Analyzer API",
+    "description": "API collection for testing the Requirements Analyzer application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Requirements",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/requirement",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement"]
+        },
+        "description": "Retrieve all analyzed requirements from the database"
+      }
+    },
+    {
+      "name": "Get Requirement By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "1"]
+        },
+        "description": "Retrieve a specific requirement by its ID"
+      }
+    },
+    {
+      "name": "Analyze Simple Requirement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"Create a simple blog application where users can write posts and add comments.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Analyze a simple requirement and generate processes, subprocesses, and use cases"
+      }
+    },
+    {
+      "name": "Analyze Task Management System",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"Create a task management application where users can create tasks, assign them to team members, set due dates, mark tasks as complete, and receive notifications for approaching deadlines. Include a dashboard showing task statistics and a calendar view.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Analyze a more complex task management system requirement"
+      }
+    },
+    {
+      "name": "Analyze E-commerce Platform",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"Build an e-commerce platform where customers can browse products by category, search for items, add products to a shopping cart, checkout with multiple payment options, and track their orders. Sellers should be able to list products, manage inventory, process orders, and view sales analytics. Include a review and rating system for products.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Analyze a comprehensive e-commerce platform requirement"
+      }
+    },
+    {
+      "name": "Analyze Healthcare System",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"Develop a healthcare appointment system where patients can register, search for doctors by specialty, book appointments online, and receive automated email and SMS reminders. Doctors should be able to view their schedules, update availability, access patient medical history, write prescriptions electronically, and maintain consultation notes. Receptionists should be able to manage appointments, handle walk-in patients, and process payments. The system should maintain HIPAA compliance and support emergency appointment prioritization.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Analyze a complex healthcare system with multiple user types"
+      }
+    },
+    {
+      "name": "Analyze Inventory Management",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"Create a warehouse inventory management system that supports receiving goods with barcode scanning, tracking stock levels across multiple locations, managing order fulfillment with pick-pack-ship workflow, generating low stock alerts, conducting cycle counts, and producing real-time inventory reports. Include support for batch tracking, expiration date management, and integration with shipping carriers for label printing.\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Analyze an inventory management system with warehouse operations"
+      }
+    },
+    {
+      "name": "Test Invalid Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requirementText\": \"\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/requirement/analyze",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "requirement", "analyze"]
+        },
+        "description": "Test error handling with empty requirement text (should return 400 Bad Request)"
+      }
+    }
+  ]
+}
+
